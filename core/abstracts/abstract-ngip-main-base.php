@@ -174,12 +174,7 @@ if ( ! class_exists( 'NGIP_Main_Base' ) ) {
 		abstract protected function get_modules(): array;
 
 		protected function initialize() {
-			$this->assign_modules(
-				[
-					'admins'    => NGIP_Admins::class,
-					'registers' => NGIP_Registers::class,
-				]
-			);
+			$this->assign_modules( $this->get_modules() );
 
 			$this->add_action( 'wp', 'init_conditional_modules' );
 

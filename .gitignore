@@ -9,8 +9,8 @@
 .git
 
 /vendor/*
-!/vendor/composer
-!/vendor/geoip2
-!/vendor/maxmind
-!/vendor/maxmind-db
-!/vendor/autoload.php
+# !/vendor/composer
+# !/vendor/geoip2
+# !/vendor/maxmind
+# !/vendor/maxmind-db
+# !/vendor/autoload.php

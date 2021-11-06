@@ -29,7 +29,7 @@ if ( ! class_exists( 'NGIP_Register_Script' ) ) {
 		}
 
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_script' ], $this );
+			yield from call_user_func( [ NGIP_Registers::class, 'regs_script' ], $this );
 		}
 
 		/**
@@ -38,7 +38,7 @@ if ( ! class_exists( 'NGIP_Register_Script' ) ) {
 		 *
 		 * @return string
 		 */
-		protected function src_helper( string $rel_path, bool $replace_min = true ): string {
+		public function src_helper( string $rel_path, bool $replace_min = true ): string {
 			$rel_path = trim( $rel_path, '\\/' );
 
 			if ( ngip_script_debug() && $replace_min && substr( $rel_path, - 7 ) === '.min.js' ) {

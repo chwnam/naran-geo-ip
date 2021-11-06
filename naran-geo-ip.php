@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Naran GeoIP
  * Plugin URI:        https://github.com/chwnam/naran-geo-ip/
- * Description:       Get country of client by IP address.
+ * Description:       This plugin is abbreviated to 'NGIP'. It helps get country of client by IP address.
  * Version:           1.0.0
  * Requires at least:
  * Requires PHP:      7.4
@@ -22,8 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-const NGIP_MAIN     = __FILE__;
-const NGIP_VERSION  = '1.0.0';
-const NGIP_PRIORITY = 750;
+const NGIP_MAIN_FILE = __FILE__;
+const NGIP_VERSION   = '1.0.0';
+const NGIP_PRIORITY  = 750;
 
 ngip();

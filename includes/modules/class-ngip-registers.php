@@ -39,23 +39,23 @@ if ( ! class_exists( 'NGIP_Registers' ) ) {
 			 */
 			$this->assign_modules(
 				[
-					'activation'    => NGIP_Register_Activation::class,
+//					'activation'    => NGIP_Register_Activation::class,
 					'ajax'          => NGIP_Register_Ajax::class,
-					'comment_meta'  => NGIP_Register_Comment_Meta::class,
+//					'comment_meta'  => NGIP_Register_Comment_Meta::class,
 					'cron'          => NGIP_Register_Cron::class,
 					'cron_schedule' => NGIP_Register_Cron_Schedule::class,
-					'deactivation'  => NGIP_Register_Deactivation::class,
+//					'deactivation'  => NGIP_Register_Deactivation::class,
 					'option'        => NGIP_Register_Option::class,
-					'post_meta'     => NGIP_Register_Post_Meta::class,
-					'post_type'     => NGIP_Register_Post_Type::class,
+//					'post_meta'     => NGIP_Register_Post_Meta::class,
+//					'post_type'     => NGIP_Register_Post_Type::class,
 					'script'        => NGIP_Register_Script::class,
 					'style'         => NGIP_Register_Style::class,
-					'submit'        => NGIP_Register_Submit::class,
-					'taxonomy'      => NGIP_Register_Taxonomy::class,
-					'term_meta'     => NGIP_Register_Term_Meta::class,
+//					'submit'        => NGIP_Register_Submit::class,
+//					'taxonomy'      => NGIP_Register_Taxonomy::class,
+//					'term_meta'     => NGIP_Register_Term_Meta::class,
 					// NOTE: 'uninstall' is not a part of registers submodules.
 					//       Because it 'uninstall' hook requires static method callback.
-					'user_meta'     => NGIP_Register_User_Meta::class,
+//					'user_meta'     => NGIP_Register_User_Meta::class,
 				]
 			);
 		}
@@ -66,8 +66,8 @@ if ( ! class_exists( 'NGIP_Registers' ) ) {
 		}
 
 		public static function regs_ajax( NGIP_Register_Ajax $register ): Generator {
-			// Define your ajax regs for callback.
-			yield null;
+			/** @uses NGIP_Admin_Settings::activate_db_schedule() */
+			yield new NGIP_Reg_Ajax( 'ngip_activate_db_schedule', 'admins.settings@activate_db_schedule', );
 		}
 
 		public static function regs_comment_meta( NGIP_Register_Comment_Meta $register ): Generator {
@@ -77,12 +77,12 @@ if ( ! class_exists( 'NGIP_Registers' ) ) {
 
 		public static function regs_cron( NGIP_Register_Cron $register ): Generator {
 			// Define your cron regs for callback.
-			yield null;
+			yield new NGIP_Reg_Cron( time(), 'ngip_15_days', 'ngip_db_update' );
 		}
 
 		public static function regs_cron_schedule( NGIP_Register_Cron_Schedule $register ): Generator {
 			// Define your cron schedule regs for callback.
-			yield null;
+			yield new NGIP_Reg_Cron_Schedule( 'ngip_15_days', 1296000, __( 'NGIP GeoIP DB Update', 'ngip' ) );
 		}
 
 		public static function regs_deactivation( NGIP_Register_Deactivation $register ): Generator {
@@ -92,7 +92,18 @@ if ( ! class_exists( 'NGIP_Registers' ) ) {
 
 		public static function regs_option( NGIP_Register_Option $register ): Generator {
 			// Define your option regs for callback.
-			yield null;
+			yield 'settings' => new NGIP_Reg_Option(
+				'ngip_settings',
+				'ngip_settings',
+				[
+					'type'              => 'array',
+					'description'       => 'NGIP settings array',
+					'sanitize_callback' => [ NGIP_Settings::class, 'sanitize' ],
+					'show_in_rest'      => false,
+					'default'           => [ NGIP_Settings::class, 'get_default' ],
+					'autoload'          => false,
+				]
+			);
 		}
 
 		public static function regs_post_meta( NGIP_Register_Post_Meta $register ): Generator {
@@ -107,7 +118,11 @@ if ( ! class_exists( 'NGIP_Registers' ) ) {
 
 		public static function regs_script( NGIP_Register_Script $register ): Generator {
 			// Define your script regs for callback.
-			yield null;
+			yield new NGIP_Reg_Script(
+				'ngip-set-next-schedule',
+				$register->src_helper( 'set-next-schdule.js' ),
+				[ 'jquery' ]
+			);
 		}
 
 		public static function regs_style( NGIP_Register_Style $register ): Generator {

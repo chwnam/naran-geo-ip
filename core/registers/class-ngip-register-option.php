@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'NGIP_Register_Option' ) ) {
 	/**
 	 * NOTE: Add 'property-read' phpdoc to make your editor inspect option items properly.
+	 *
+	 * @property-read NGIP_Reg_Option $settings
 	 */
 	class NGIP_Register_Option implements NGIP_Register {
 		use NGIP_Hook_Impl;
@@ -54,7 +56,7 @@ if ( ! class_exists( 'NGIP_Register_Option' ) ) {
 		 * @return Generator
 		 */
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_option' ], $this );
+			yield from call_user_func( [ NGIP_Registers::class, 'regs_option' ], $this );
 		}
 	}
 }

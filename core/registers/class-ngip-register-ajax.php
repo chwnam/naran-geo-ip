@@ -59,7 +59,7 @@ if ( ! class_exists( 'NGIP_Register_Ajax' ) ) {
 		}
 
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_ajax' ], $this );
+			yield from call_user_func( [ NGIP_Registers::class, 'regs_ajax' ], $this );
 		}
 	}
 }

@@ -43,7 +43,7 @@ if ( ! class_exists( 'NGIP_Register_Cron_Schedule' ) ) {
 		}
 
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_cron_schedule' ], $this );
+			yield from call_user_func( [ NGIP_Registers::class, 'regs_cron_schedule' ], $this );
 		}
 	}
 }

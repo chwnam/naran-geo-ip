@@ -13,6 +13,7 @@ if ( ! class_exists( 'NGIP_Main' ) ) {
 	 *
 	 * @property-read NGIP_Admins    $admins
 	 * @property-read NGIP_Registers $registers
+	 * @property-read NGIP_Settings  $settings
 	 */
 	final class NGIP_Main extends NGIP_Main_Base {
 		/**
@@ -26,6 +27,7 @@ if ( ! class_exists( 'NGIP_Main' ) ) {
 			return [
 				'admins'    => NGIP_Admins::class,
 				'registers' => NGIP_Registers::class,
+				'settings'  => function () { return new NGIP_Settings(); },
 			];
 		}
 	}
