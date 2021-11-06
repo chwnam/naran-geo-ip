@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Post meta register
+ * NGIP: Comment meta register
  */
 
 /* ABSPATH check */
@@ -8,11 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Post_Meta' ) ) {
+if ( ! class_exists( 'NGIP_Register_Comment_Meta' ) ) {
 	/**
 	 * NOTE: Add 'property-read' phpdoc to make your editor inspect meta items.
 	 */
-	class NGIP_Register_Post_Meta extends NGIP_Reigster_Meta {
+	class NGIP_Register_Comment_Meta extends NGIP_Reigster_Base_Meta {
 		/**
 		 * Define items here.
 		 *
@@ -21,7 +21,7 @@ if ( ! class_exists( 'NGIP_Register_Post_Meta' ) ) {
 		 * @return Generator
 		 */
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_post_meta' ], $this );
+			yield; // yield 'alias' => new NGIP_Reg_Meta();
 		}
 	}
 }

@@ -12,7 +12,7 @@ if ( ! class_exists( 'NGIP_Register_Term_Meta' ) ) {
 	/**
 	 * NOTE: Add 'property-read' phpdoc to make your editor inspect meta items.
 	 */
-	class NGIP_Register_Term_Meta extends NGIP_Reigster_Meta {
+	class NGIP_Register_Term_Meta extends NGIP_Reigster_Base_Meta {
 		/**
 		 * Define items here.
 		 *
@@ -21,7 +21,7 @@ if ( ! class_exists( 'NGIP_Register_Term_Meta' ) ) {
 		 * @return Generator
 		 */
 		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_term_meta' ], $this );
+			yield; // yield 'alias' => new NGIP_Reg_Meta();
 		}
 	}
 }

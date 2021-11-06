@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Option register
+ * NGIP: Option register base
  */
 
 /* ABSPATH check */
@@ -8,13 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Option' ) ) {
-	/**
-	 * NOTE: Add 'property-read' phpdoc to make your editor inspect option items properly.
-	 *
-	 * @property-read NGIP_Reg_Option $settings
-	 */
-	class NGIP_Register_Option implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Option' ) ) {
+	abstract class NGIP_Register_Base_Option implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		/** @var array Key: alias, value: option_name */
@@ -46,17 +41,6 @@ if ( ! class_exists( 'NGIP_Register_Option' ) ) {
 					$this->fields[ $alias ] = $item->get_option_name();
 				}
 			}
-		}
-
-		/**
-		 * Define items here.
-		 *
-		 * To use alias, do not forget to return generator as 'key => value' form!
-		 *
-		 * @return Generator
-		 */
-		public function get_items(): Generator {
-			yield from call_user_func( [ NGIP_Registers::class, 'regs_option' ], $this );
 		}
 	}
 }

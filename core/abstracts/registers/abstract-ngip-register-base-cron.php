@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Cron register
+ * NGIP: Cron register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Cron' ) ) {
-	class NGIP_Register_Cron implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Cron' ) ) {
+	abstract class NGIP_Register_Base_Cron implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		public function __construct() {
@@ -31,10 +31,6 @@ if ( ! class_exists( 'NGIP_Register_Cron' ) ) {
 					$item->unregister();
 				}
 			}
-		}
-
-		public function get_items(): Generator {
-			yield from call_user_func( [ NGIP_Registers::class, 'regs_cron' ], $this );
 		}
 	}
 }

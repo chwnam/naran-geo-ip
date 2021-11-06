@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Meta register (abstract)
+ * NGIP: Register meta base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Reigster_Meta' ) ) {
-	abstract class NGIP_Reigster_Meta implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Reigster_Base_Meta' ) ) {
+	abstract class NGIP_Reigster_Base_Meta implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		/**

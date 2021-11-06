@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Deactivation register
+ * NGIP: Deactivation register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Deactivation' ) ) {
-	class NGIP_Register_Deactivation implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Deactivation' ) ) {
+	abstract class NGIP_Register_Base_Deactivation implements NGIP_Register {
 		public function __construct() {
 			register_deactivation_hook( ngip()->get_main_file(), [ $this, 'register' ] );
 		}
@@ -23,10 +23,6 @@ if ( ! class_exists( 'NGIP_Register_Deactivation' ) ) {
 					$item->register();
 				}
 			}
-		}
-
-		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_deactivation' ], $this );
 		}
 	}
 }

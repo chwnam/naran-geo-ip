@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Submit (admin-post.php) register
+ * NGIP: AJAX (admin-ajax.php, or wc-ajax) register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Submit' ) ) {
-	class NGIP_Register_Submit implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Ajax' ) ) {
+	abstract class NGIP_Register_Base_Ajax implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		private array $inner_handlers = [];
@@ -23,16 +23,14 @@ if ( ! class_exists( 'NGIP_Register_Submit' ) ) {
 		 * @actin       init
 		 */
 		public function register() {
-			$dispatch = [ $this, 'dispatch' ];
-
 			foreach ( $this->get_items() as $item ) {
 				if (
-					$item instanceof NGIP_Reg_Submit &&
+					$item instanceof NGIP_Reg_Ajax &&
 					$item->action &&
 					! isset( $this->inner_handlers[ $item->action ] )
 				) {
 					$this->inner_handlers[ $item->action ] = $item->callback;
-					$item->register( $dispatch );
+					$item->register( [ $this, 'dispatch' ] );
 				}
 			}
 		}
@@ -49,19 +47,15 @@ if ( ! class_exists( 'NGIP_Register_Submit' ) ) {
 				} catch ( NGIP_Callback_Exception $e ) {
 					$error = new WP_Error();
 					$error->add(
-						'ngip_submit_error',
+						'ngip_ajax_error',
 						sprintf(
-							'Submit callback handler `%s` is invalid. Please check your submit register items.',
+							'AJAX callback handler `%s` is invalid. Please check your AJAX register items.',
 							ngip_format_callback( $this->inner_handlers[ $action ] )
 						)
 					);
-					wp_die( $error, 404 );
+					wp_send_json_error( $error, 404 );
 				}
 			}
-		}
-
-		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_submit' ], $this );
 		}
 	}
 }

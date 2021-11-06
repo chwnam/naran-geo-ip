@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Cron schedule register
+ * NGIP: Cron schedule register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Cron_Schedule' ) ) {
-	class NGIP_Register_Cron_Schedule implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Cron_Schedule' ) ) {
+	abstract class NGIP_Register_Base_Cron_Schedule implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		public function __construct() {
@@ -40,10 +40,6 @@ if ( ! class_exists( 'NGIP_Register_Cron_Schedule' ) ) {
 			}
 
 			return $schedules;
-		}
-
-		public function get_items(): Generator {
-			yield from call_user_func( [ NGIP_Registers::class, 'regs_cron_schedule' ], $this );
 		}
 	}
 }

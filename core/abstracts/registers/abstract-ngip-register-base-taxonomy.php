@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Custom post type register
+ * NGIP: Custom taxonomy register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Post_Type' ) ) {
-	class NGIP_Register_Post_Type implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Taxonomy' ) ) {
+	abstract class NGIP_Register_Base_Taxonomy implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		public function __construct() {
@@ -22,14 +22,10 @@ if ( ! class_exists( 'NGIP_Register_Post_Type' ) ) {
 		 */
 		public function register() {
 			foreach ( $this->get_items() as $item ) {
-				if ( $item instanceof NGIP_Reg_Post_Type ) {
+				if ( $item instanceof NGIP_Reg_Taxonomy ) {
 					$item->register();
 				}
 			}
-		}
-
-		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_post_type' ], $this );
 		}
 	}
 }

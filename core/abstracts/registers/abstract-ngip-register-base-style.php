@@ -1,6 +1,6 @@
 <?php
 /**
- * NGIP: Style register
+ * NGIP: Style register base
  */
 
 /* ABSPATH check */
@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'NGIP_Register_Style' ) ) {
-	class NGIP_Register_Style implements NGIP_Register {
+if ( ! class_exists( 'NGIP_Register_Base_Style' ) ) {
+	abstract class NGIP_Register_Base_Style implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
 		public function __construct() {
@@ -26,10 +26,6 @@ if ( ! class_exists( 'NGIP_Register_Style' ) ) {
 					$item->register();
 				}
 			}
-		}
-
-		public function get_items(): Generator {
-			yield call_user_func( [ NGIP_Registers::class, 'regs_style' ], $this );
 		}
 
 		/**
