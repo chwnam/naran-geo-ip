@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Register_Option' ) ) {
 	/**
-	 * NOTE: Add 'property-read' phpdoc to make your editor inspect option items properly.
+	 * @property-read NGIP_Reg_Option $settings
 	 */
 	class NGIP_Register_Option extends NGIP_Register_Base_Option {
 		/**

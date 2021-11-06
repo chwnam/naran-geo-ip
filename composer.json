@@ -2,7 +2,7 @@
   "name": "naran/geo-ip",
   "description": "Get country of client by IP address.",
   "type": "wordpress-plugin",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "authors": [
     {
       "name": "changwoo",

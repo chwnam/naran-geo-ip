@@ -14,7 +14,10 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		use NGIP_Template_Impl;
 
 		public function __construct() {
-			$this->add_action( 'admin_menu', 'add_admin_menu' );
+			$this
+				->add_action( 'admin_menu', 'add_admin_menu' )
+				->add_action( 'ngip_db_update', 'db_scheduled_task' )
+			;
 		}
 
 		/**
@@ -43,6 +46,28 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 					'page'         => 'ngip',
 				]
 			);
+
+			ngip()->query_ip->query_maxmind_database( '218.238.87.235' );
+		}
+
+		public function db_scheduled_task() {
+			$latest_version = ngip()->updater->update_database(
+				ngip_settings()->get_license_key(),
+				ngip_settings()->get_current_version()
+			);
+
+			if ( is_wp_error( $latest_version ) ) {
+				error_log(
+					sprintf(
+						'[NGIP] Error: %s, %s',
+						$latest_version->get_error_code(),
+						$latest_version->get_error_message()
+					)
+				);
+			} else {
+				ngip_settings()->update_current_version( $latest_version );
+				error_log( '[NGIP] GeoIP Database updated to ' . $latest_version . '.' );
+			}
 		}
 
 		/**
@@ -50,21 +75,21 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		 */
 		public function setup_fields() {
 			add_settings_section(
-				'general',
+				'ngip-general',
 				__( 'General Settings', 'ngip' ),
 				'__return_empty_string',
 				'ngip'
 			);
 
 			add_settings_field(
-				'maxmind-license-key',
+				'ngip-field-maxmind-license-key',
 				__( 'MaxMind License Key', 'ngip' ),
-				[ __CLASS__, 'output_generic_input' ],
+				[ __CLASS__, 'render_generic_input' ],
 				'ngip',
-				'general',
+				'ngip-general',
 				[
-					'id'          => 'ngip-maxlind-license-key',
-					'label_for'   => 'ngip-maxlind-license-key',
+					'id'          => 'ngip_settings-license-key',
+					'label_for'   => 'ngip_settings-license-key',
 					'name'        => 'ngip_settings[maxmind_license_key]',
 					'type'        => 'text',
 					'class'       => 'text',
@@ -81,18 +106,48 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 			);
 
 			add_settings_section(
-				'ngip-section-schedule',
-				__( 'Cron Schedule', 'ngip' ),
+				'ngip-section-db-stat',
+				__( 'Database Status', 'ngip' ),
 				'__return_empty_string',
 				'ngip'
 			);
 
 			add_settings_field(
-				'ngip-next-db-update',
-				__( 'Next DB Update', 'ngip' ),
-				[ $this, 'output_next_db_update' ],
+				'ngip-field-db-path',
+				__( 'Database Path', 'ngip' ),
+				[ $this, 'render_generic_input' ],
 				'ngip',
-				'ngip-section-schedule',
+				'ngip-section-db-stat',
+				[
+					'id'          => 'ngip-database-path',
+					'label_for'   => 'ngip-database-path',
+					'class'       => 'text large-text',
+					'value'       => ngip()->updater->get_database_path(),
+					'extra_attrs' => [ 'readonly' => '' ],
+				]
+			);
+
+			add_settings_field(
+				'ngip-field-current-version',
+				__( 'Database Version', 'ngip' ),
+				[ $this, 'render_generic_input' ],
+				'ngip',
+				'ngip-section-db-stat',
+				[
+					'id'    => 'ngip-settings-current-version',
+					'name'  => 'ngip_settings[current_version]',
+					'type'  => 'hidden',
+					'value' => ngip_settings()->get_current_version(),
+					'after' => ngip_settings()->get_current_version(),
+				]
+			);
+
+			add_settings_field(
+				'ngip-field-next-db-update',
+				__( 'Next DB Update', 'ngip' ),
+				[ $this, 'render_next_db_update' ],
+				'ngip',
+				'ngip-section-db-stat',
 				[ 'next_sched' => wp_next_scheduled( 'ngip_db_update' ) ]
 			);
 		}
@@ -102,7 +157,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		 *
 		 * @param $args 'next_sched' key required.
 		 */
-		public function output_next_db_update( $args ) {
+		public function render_next_db_update( $args ) {
 			if ( ! empty( $args['next_sched'] ) ) {
 				$this->render(
 					'admins/settings-next-schedule',
@@ -157,11 +212,11 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		}
 
 		/**
-		 * Output <input type="..."> for general purpose.
+		 * Render <input type="..."> for general purpose.
 		 *
 		 * @param array $args
 		 */
-		public static function output_generic_input( array $args ) {
+		public static function render_generic_input( array $args ) {
 			$defaults = [
 				'id'          => '',
 				'name'        => '',
@@ -196,7 +251,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 				'%s<input %s>%s',
 				$args['before'] ? wp_kses_post( $args['before'] ) : '',
 				implode( ' ', $attrs ),
-				$args['before'] ? wp_kses_post( $args['after'] ) : '',
+				$args['after'] ? wp_kses_post( $args['after'] ) : '',
 			);
 
 			if ( $args['description'] ) {
