@@ -264,7 +264,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 			$ip = sanitize_text_field( wp_unslash( $_REQUEST['ip'] ?? '' ) );
 
 			if ( $ip ) {
-				$result = ngip_query_ip( $ip );
+				$result = ngip_query_maxmind_database( $ip );
 
 				if ( is_wp_error( $result ) ) {
 					wp_send_json_error( $result, 400 );
