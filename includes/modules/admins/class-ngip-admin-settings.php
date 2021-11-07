@@ -16,7 +16,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		public function __construct() {
 			$this
 				->add_action( 'admin_menu', 'add_admin_menu' )
-				->add_action( 'ngip_db_update', 'db_scheduled_task' )
+				->add_action( 'update_option_ngip_settings', 'after_option_update', null, 4 )
 			;
 		}
 
@@ -29,51 +29,45 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 				__( 'NGIP', 'ngip' ),
 				'manage_options',
 				'ngip',
-				[ $this, 'output_admin_menu' ]
+				[ $this, 'render_admin_menu' ]
 			);
 		}
 
 		/**
 		 * Output settings page.
 		 */
-		public function output_admin_menu() {
-			$this->setup_fields();
-
-			$this->render(
-				'admins/settings',
-				[
-					'option_group' => 'ngip_settings',
-					'page'         => 'ngip',
-				]
-			);
-
-			ngip()->query_ip->query_maxmind_database( '218.238.87.235' );
+		public function render_admin_menu() {
+			$this
+				->setup_fields()
+				->enqueue_style( 'ngip-admins-settings' )
+				->render(
+					'admins/settings',
+					[
+						'option_group' => 'ngip_settings',
+						'page'         => 'ngip',
+					]
+				)
+			;
 		}
 
-		public function db_scheduled_task() {
-			$latest_version = ngip()->updater->update_database(
-				ngip_settings()->get_license_key(),
-				ngip_settings()->get_current_version()
-			);
+		/**
+		 * @param mixed $old_value
+		 */
+		public function after_option_update( $old_value, $new_value ) {
+			$old_license = $old_value['maxmind_license_key'] ?? '';
+			$new_license = $new_value['maxmind_license_key'] ?? '';
 
-			if ( is_wp_error( $latest_version ) ) {
-				error_log(
-					sprintf(
-						'[NGIP] Error: %s, %s',
-						$latest_version->get_error_code(),
-						$latest_version->get_error_message()
-					)
-				);
-			} else {
-				ngip_settings()->update_current_version( $latest_version );
-				error_log( '[NGIP] GeoIP Database updated to ' . $latest_version . '.' );
+			if ( $new_license && $old_license !== $new_license ) {
+				$this->remove_action( 'update_option_ngip_settings', 'after_option_update' );
+				do_action( 'ngip_db_update' );
+				$this->add_action( 'update_option_ngip_settings', 'after_option_update', null, 4 );
 			}
 		}
 
 		/**
 		 * Add sections and fields before render settings.
 		 */
-		public function setup_fields() {
+		protected function setup_fields(): self {
 			add_settings_section(
 				'ngip-general',
 				__( 'General Settings', 'ngip' ),
@@ -121,8 +115,9 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 				[
 					'id'          => 'ngip-database-path',
 					'label_for'   => 'ngip-database-path',
+					'name'        => 'ngip_settings[database_path]',
 					'class'       => 'text large-text',
-					'value'       => ngip()->updater->get_database_path(),
+					'value'       => ngip_get_database_path(),
 					'extra_attrs' => [ 'readonly' => '' ],
 				]
 			);
@@ -137,8 +132,8 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 					'id'    => 'ngip-settings-current-version',
 					'name'  => 'ngip_settings[current_version]',
 					'type'  => 'hidden',
-					'value' => ngip_settings()->get_current_version(),
-					'after' => ngip_settings()->get_current_version(),
+					'value' => ngip_get_database_version(),
+					'after' => ngip_get_database_version(),
 				]
 			);
 
@@ -150,6 +145,48 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 				'ngip-section-db-stat',
 				[ 'next_sched' => wp_next_scheduled( 'ngip_db_update' ) ]
 			);
+
+			if ( file_exists( ngip_get_database_path() ) ) {
+				add_settings_section(
+					'ngip-section-ip-tester',
+					__( 'Tester', 'ngip' ),
+					'__return_empty_string',
+					'ngip'
+				);
+
+				add_settings_field(
+					'ngip-field-yours',
+					__( 'Yours', 'ngip' ),
+					[ $this, 'render_ip_test_yours' ],
+					'ngip',
+					'ngip-section-ip-tester'
+				);
+
+				add_settings_field(
+					'ngip-field-ip-input',
+					__( 'IP Address', 'ngip' ),
+					[ $this, 'render_ip_test_input' ],
+					'ngip',
+					'ngip-section-ip-tester',
+					[ 'label_for' => 'ngip-test-ip-input' ]
+				);
+
+				add_settings_field(
+					'ngip-field-test-result',
+					__( 'Result', 'ngip' ),
+					[ $this, 'render_ip_test_result' ],
+					'ngip',
+					'ngip-section-ip-tester'
+				);
+
+				$this
+					->enqueue_script( 'ngip-ip-tester' )
+					->localize( [ 'nonce' => wp_create_nonce( 'ngip-ip-tester' ) ] )
+					->enqueue_ejs( 'admins/settings-ip-test-ejs' )
+				;
+			}
+
+			return $this;
 		}
 
 		/**
@@ -179,6 +216,71 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 			}
 		}
 
+		public function render_ip_test_yours() {
+			$ip   = '';
+			$code = '';
+
+			$external_ip = ngip_get_external_ip( false );
+			$result      = ngip_query_maxmind_database( $external_ip );
+
+			if ( is_array( $result ) ) {
+				$ip   = $external_ip;
+				$code = $result['country']['iso_code'] ?? '';
+			}
+
+			$this->render(
+				'admins/settings-ip-test-yours',
+				[
+					'ip'           => $ip,
+					'country_code' => $code
+				]
+			);
+		}
+
+		public function render_ip_test_input() {
+			$this->render( 'admins/settings-ip-test-input' );
+		}
+
+		public function render_ip_test_result() {
+			$this->render( 'admins/settings-ip-test-result' );
+		}
+
+		/**
+		 * AJAX Callback
+		 *
+		 * @callback
+		 * @used-by NGIP_Register_Ajax::get_items()
+		 */
+		public function query_ip_address() {
+			check_ajax_referer( 'ngip-ip-tester', 'nonce' );
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error(
+					new WP_Error( 'ngip_error', __( 'You are not allowed to do this action.', 'ngip' ) ),
+					403
+				);
+			}
+
+			$ip = sanitize_text_field( wp_unslash( $_REQUEST['ip'] ?? '' ) );
+
+			if ( $ip ) {
+				$result = ngip_query_ip( $ip );
+
+				if ( is_wp_error( $result ) ) {
+					wp_send_json_error( $result, 400 );
+				} elseif ( empty( $result ) ) {
+					$message = sprintf(
+					/* translators: ip address string */
+						__( 'IP \'%s\' is not found.', 'ngip' ),
+						$ip
+					);
+					wp_send_json_error( new WP_Error( 'ngip_error', $message ) );
+				} else {
+					wp_send_json_success( $result );
+				}
+			}
+		}
+
 		/**
 		 * AJAX callback
 		 *
@@ -188,6 +290,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 			check_ajax_referer( 'ngip-set-next-schedule', 'nonce' );
 
 			$item = ngip()->registers->cron->get_items()->current();
+
 			if ( $item instanceof NGIP_Reg_Cron && 'ngip_db_update' === $item->hook ) {
 				$item->unregister();
 				$item->register();

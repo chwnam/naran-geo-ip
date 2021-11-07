@@ -31,8 +31,9 @@ if ( ! class_exists( 'NGIP_Main' ) ) {
 				'query_ip'  => function () { return new NGIP_Query_IP(); },
 				'registers' => NGIP_Registers::class,
 				'settings'  => function () { return new NGIP_Settings(); },
-				'updater'   => function () { return new NGIP_Updater(); },
+				'updater'   => NGIP_Updater::class,
 			];
 		}
 	}
 }
+// TODO: 최초 라이센스 키를 입력한 경우라면, 데이터베이스 무조건 받게 해야 함.

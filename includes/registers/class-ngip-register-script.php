@@ -13,8 +13,14 @@ if ( ! class_exists( 'NGIP_Register_Script' ) ) {
 		public function get_items(): Generator {
 			yield new NGIP_Reg_Script(
 				'ngip-set-next-schedule',
-				$this->src_helper( 'set-next-schdule.js' ),
+				$this->src_helper( 'admins/set-next-schdule.js' ),
 				[ 'jquery' ]
+			);
+
+			yield new NGIP_Reg_Script(
+				'ngip-ip-tester',
+				$this->src_helper( 'admins/ip-tester.js' ),
+				[ 'jquery', 'wp-util' ]
 			);
 		}
 	}

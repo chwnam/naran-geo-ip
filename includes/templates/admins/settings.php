@@ -26,4 +26,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 		submit_button();
 		?>
     </form>
+	<?php do_action( 'ngip_after_settings_form' ); ?>
 </div>

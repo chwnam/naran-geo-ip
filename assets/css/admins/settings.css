@@ -1,0 +1,13 @@
+.ngip-result-list {
+    margin-top: 0;
+}
+
+.ngip-result-label {
+    display: inline-block;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+.ngip-result-value {
+    margin-right: 30px;
+}

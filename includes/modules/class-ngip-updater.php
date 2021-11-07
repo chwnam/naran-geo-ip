@@ -16,19 +16,54 @@ if ( ! class_exists( 'NGIP_Updater' ) ) {
 
 		const EXT = '.mmdb';
 
+		use NGIP_Hook_Impl;
+
+		public function __construct() {
+			$this->add_action( 'ngip_db_update', 'db_scheduled_task' );
+		}
+
+		public function db_scheduled_task() {
+			$latest_version = $this->update_database(
+				ngip_settings()->get_license_key(),
+				ngip_settings()->get_database_path(),
+				ngip_settings()->get_database_version()
+			);
+
+			if ( is_wp_error( $latest_version ) ) {
+				error_log(
+					sprintf(
+						'[NGIP] Error: %s, %s',
+						$latest_version->get_error_code(),
+						$latest_version->get_error_message()
+					)
+				);
+			} else {
+				[ $new_path, $new_version ] = $latest_version;
+
+				ngip_settings()->update_database_status( $new_path, $new_version );
+
+				error_log( '[NGIP] GeoIP Database updated to ' . $new_version . '.' );
+			}
+		}
+
 		/**
 		 * Update databaase
 		 *
 		 * @param string $license_key
+		 * @param string $current_database_path
 		 * @param string $current_version
 		 *
-		 * @return string|WP_Error
+		 * @return array|WP_Error
 		 */
-		public function update_database( string $license_key, string $current_version ) {
+		public function update_database(
+			string $license_key,
+			string $current_database_path,
+			string $current_version
+		) {
 			$this->create_upload_directory();
 
-			$version = $this->get_latest_version( $license_key );
-			if ( $version === $current_version ) {
+			$new_version = $this->get_latest_version( $license_key );
+			if ( $new_version === $current_version ) {
 				return new WP_Error(
 					'ngip_already_latest',
 					__( 'The current database is already latest version.', 'ngip' )
@@ -40,16 +75,20 @@ if ( ! class_exists( 'NGIP_Updater' ) ) {
 				return $archive;
 			}
 
-			$replace = $this->replace_database( $archive );
-			if ( is_wp_error( $replace ) ) {
-				return $replace;
+			if ( file_exists( $current_database_path ) ) {
+				unlink( $current_database_path );
 			}
 
-			return $version;
+			$new_database_path = $this->replace_database( $archive );
+			if ( is_wp_error( $new_database_path ) ) {
+				return $new_database_path;
+			}
+
+			return [ $new_database_path, $new_version ];
 		}
 
 		public function replace_database( string $tmp_database ) {
-			$database_path = $this->get_database_path();
+			$database_path = self::generate_database_path();
 			if ( empty( $database_path ) ) {
 				return new WP_Error( 'error', __( 'Database path error.', 'ngip' ) );
 			}
@@ -65,12 +104,12 @@ if ( ! class_exists( 'NGIP_Updater' ) ) {
 			$wp_filesystem->move( $tmp_database, $database_path, true );
 			$wp_filesystem->delete( dirname( $tmp_database ) );
 
-			return true;
+			return $database_path;
 		}
 
 		public function download_database( string $license_key ) {
 			if ( ! extension_loaded( 'Phar' ) ) {
-				return new WP_Error( 'error', __( 'Phar extension not found.', 'ngip' ) );
+				return new WP_Error( 'error', __( '\'Phar\' extension not found.', 'ngip' ) );
 			}
 
 			$url = add_query_arg(
@@ -184,7 +223,7 @@ if ( ! class_exists( 'NGIP_Updater' ) ) {
 		}
 
 		public function create_upload_directory() {
-			$path = dirname( $this->get_database_path() );
+			$path = static::get_upload_directory();
 
 			if ( ! file_exists( $path ) ) {
 				mkdir( $path, 0777, true );
@@ -195,24 +234,19 @@ if ( ! class_exists( 'NGIP_Updater' ) ) {
 			}
 		}
 
-		public function get_database_path(): string {
+		public static function get_upload_directory(): string {
 			$upload_dir = wp_upload_dir();
 
-			$database_path = trailingslashit( $upload_dir['basedir'] ) . 'ngip/';
-			$database_path .= $this->get_db_prefix() . '-' . self::EDITION . self::EXT;
-
-			return $database_path;
+			return trailingslashit( $upload_dir['basedir'] ) . 'ngip';
 		}
 
-		public function get_db_prefix(): string {
-			$prefix = get_option( 'ngip_mmdb_prefix' );
+		public static function generate_database_path(): string {
+			return self::get_upload_directory() . DIRECTORY_SEPARATOR .
+			       ( static::generate_db_prefix() . '-' . self::EDITION . self::EXT );
+		}
 
-			if ( empty( $prefix ) ) {
-				$prefix = wp_generate_password( 32, false );
-				update_option( 'ngip_mmdb_prefix', $prefix, 'no' );
-			}
-
-			return $prefix;
+		public static function generate_db_prefix(): string {
+			return wp_generate_password( 32, false );
 		}
 	}
 }
