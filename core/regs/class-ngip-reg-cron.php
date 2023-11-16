@@ -11,19 +11,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'NGIP_Reg_Cron' ) ) {
 	class NGIP_Reg_Cron implements NGIP_Reg {
 		/** @var int */
-		public int $timestamp;
+		public  $timestamp;
 
 		/** @var string */
-		public string $schedule;
+		public  $schedule;
 
 		/** @var string */
-		public string $hook;
+		public  $hook;
 
-		public array $args;
+		public  $args;
 
-		public bool $wp_error;
+		public  $wp_error;
 
-		public int $is_single_event;
+		public  $is_single_event;
 
 		public function __construct(
 			int $timestamp,

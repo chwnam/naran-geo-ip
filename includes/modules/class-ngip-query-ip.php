@@ -12,14 +12,14 @@ if ( ! class_exists( 'NGIP_Query_IP' ) ) {
 	class NGIP_Query_IP implements NGIP_Module {
 		use NGIP_Hook_Impl;
 
-		private ?MaxMind\Db\Reader $reader = null;
+		private  $reader = null;
 
 		/**
 		 * API endpoints for looking up user IP address.
 		 *
 		 * @var array
 		 */
-		private static array $ip_lookup_apis = [
+		private static  $ip_lookup_apis = [
 			'ipify'             => 'http://api.ipify.org/',
 			'ipecho'            => 'http://ipecho.net/plain',
 			'ident'             => 'http://ident.me',

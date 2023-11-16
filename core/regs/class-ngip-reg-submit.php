@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'NGIP_Reg_Submit' ) ) {
 	class NGIP_Reg_Submit implements NGIP_Reg {
 		/** @var string */
-		public string $action;
+		public  $action;
 
 		/** @var Closure|array|string */
 		public $callback;
@@ -19,7 +19,7 @@ if ( ! class_exists( 'NGIP_Reg_Submit' ) ) {
 		/** @var string|bool */
 		public $allow_nopriv;
 
-		public int $priority;
+		public  $priority;
 
 		/**
 		 * @param string               $action       Action name.

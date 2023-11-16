@@ -12,9 +12,9 @@ if ( ! class_exists( 'NGIP_Reg_Script' ) ) {
 	class NGIP_Reg_Script implements NGIP_Reg {
 		const WP_SCRIPT = 'ngip-wp-script-generted';
 
-		public string $handle;
+		public  $handle;
 
-		public string $src;
+		public  $src;
 
 		/** @var array|string */
 		public $deps;
@@ -22,7 +22,7 @@ if ( ! class_exists( 'NGIP_Reg_Script' ) ) {
 		/** @var string|bool */
 		public $ver;
 
-		public bool $in_footer;
+		public  $in_footer;
 
 		/**
 		 * NOTE: If a script is built from wp-scripts, check these:

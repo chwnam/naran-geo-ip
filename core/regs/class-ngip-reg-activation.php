@@ -13,9 +13,9 @@ if ( ! class_exists( 'NGIP_Reg_Activation' ) ) {
 		/** @var Closure|array|string */
 		public $callback;
 
-		public array $args;
+		public  $args;
 
-		public bool $error_log;
+		public  $error_log;
 
 		/**
 		 * @param Closure|array|string $callback

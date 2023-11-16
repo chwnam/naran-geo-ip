@@ -10,16 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Reg_Style' ) ) {
 	class NGIP_Reg_Style implements NGIP_Reg {
-		public string $handle;
+		public  $handle;
 
-		public string $src;
+		public  $src;
 
-		public array $deps;
+		public  $deps;
 
 		/** @var string|bool */
 		public $ver;
 
-		public string $media;
+		public  $media;
 
 		/**
 		 * @param string           $handle

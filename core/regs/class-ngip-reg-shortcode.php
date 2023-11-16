@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Reg_Shortcode' ) ) {
 	class NGIP_Reg_Shortcode implements NGIP_Reg {
-		public string $tag;
+		public  $tag;
 
 		/**
 		 * @var string|callable

@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Settings' ) ) {
 	class NGIP_Settings implements NGIP_Module {
-		private array $value;
+		private  $value;
 
 		public function __construct() {
 			$this->value = get_option( 'ngip_settings', NGIP_Settings::get_default() );

@@ -13,7 +13,7 @@ if ( ! class_exists( 'NGIP_Register_Base_Option' ) ) {
 		use NGIP_Hook_Impl;
 
 		/** @var array Key: alias, value: option_name */
-		private array $fields = [];
+		private  $fields = [];
 
 		public function __construct() {
 			$this->add_action( 'init', 'register' );

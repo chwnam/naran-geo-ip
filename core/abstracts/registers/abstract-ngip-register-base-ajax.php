@@ -12,7 +12,7 @@ if ( ! class_exists( 'NGIP_Register_Base_Ajax' ) ) {
 	abstract class NGIP_Register_Base_Ajax implements NGIP_Register {
 		use NGIP_Hook_Impl;
 
-		private array $inner_handlers = [];
+		private  $inner_handlers = [];
 
 		public function __construct() {
 			$this->add_action( 'init', 'register' );

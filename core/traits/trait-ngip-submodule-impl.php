@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! trait_exists( 'NGIP_Submodule_Impl' ) ) {
 	trait NGIP_Submodule_Impl {
-		private array $modules = [];
+		private $modules = [];
 
 		/**
 		 * Get submodule by name.

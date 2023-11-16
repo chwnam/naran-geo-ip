@@ -18,14 +18,14 @@ if ( ! class_exists( 'NGIP_Main_Base' ) ) {
 		/**
 		 * @var NGIP_Main_Base|null
 		 */
-		private static ?NGIP_Main_Base $instance = null;
+		private static  $instance = null;
 
 		/**
 		 * Free storage for the plugin.
 		 *
 		 * @var array
 		 */
-		private array $storage = [];
+		private  $storage = [];
 
 		/**
 		 * Parsed module cache.
@@ -34,7 +34,7 @@ if ( ! class_exists( 'NGIP_Main_Base' ) ) {
 		 *
 		 * @var array
 		 */
-		private array $parsed_cache = [];
+		private  $parsed_cache = [];
 
 		/**
 		 * Get instance method.

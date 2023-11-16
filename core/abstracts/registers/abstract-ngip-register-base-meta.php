@@ -19,7 +19,7 @@ if ( ! class_exists( 'NGIP_Reigster_Base_Meta' ) ) {
 		 *            - 1: object subtype
 		 *            - 2: key.
 		 */
-		private array $fields = [];
+		private  $fields = [];
 
 		public function __construct() {
 			$this->add_action( 'init', 'register' );

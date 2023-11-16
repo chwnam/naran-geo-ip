@@ -5,7 +5,7 @@
  * Description:       This plugin is abbreviated to 'NGIP'. It helps get country of client by IP address.
  * Version:           1.0.1
  * Requires at least: 5.3.0
- * Requires PHP:      7.4
+ * Requires PHP:      7.3
  * Author:            changwoo
  * Author URI:        https://blog.changwoo.pe.kr/
  * License:           GPLv2 or later

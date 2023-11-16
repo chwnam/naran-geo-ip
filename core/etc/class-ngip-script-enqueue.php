@@ -13,7 +13,7 @@ if ( ! class_exists( 'NGIP_Sciprt_Enqueue' ) ) {
 		/** @var NGIP_Module|object */
 		private $parent;
 
-		private string $handle;
+		private  $handle;
 
 		public function __construct( $parent, string $handle, bool $once = false ) {
 			$this->parent = $parent;

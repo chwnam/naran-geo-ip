@@ -9,15 +9,15 @@
  * @noinspection PhpIllegalPsrClassPathInspection
  */
 class NBPC_Prefix_Changer {
-	private string $root_directory = '';
+	private  $root_directory = '';
 
-	private int $root_len;
+	private  $root_len;
 
-	private string $old_prefix = '';
+	private  $old_prefix = '';
 
-	private string $new_prefix = '';
+	private  $new_prefix = '';
 
-	private array $subdirs = [ 'core', 'includes' ];
+	private  $subdirs = [ 'core', 'includes' ];
 
 	public function __construct( string $root_directory, string $old_prefix, string $new_prefix ) {
 		$this->root_directory = rtrim( realpath( $root_directory ), '\\/' );

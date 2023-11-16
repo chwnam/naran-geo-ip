@@ -20,13 +20,13 @@ if ( ! class_exists( 'NGIP_Reg_Meta' ) ) {
 	 * @property-read bool      $show_in_rest
 	 */
 	class NGIP_Reg_Meta implements NGIP_Reg {
-		private static array $meta = [];
+		private static  $meta = [];
 
-		private string $object_type = '';
+		private  $object_type = '';
 
-		private string $meta_key = '';
+		private  $meta_key = '';
 
-		private array $args;
+		private  $args;
 
 		/**
 		 * @param string $object_type    Type of object metadata. Accepts 'post', 'comment', 'term', 'user'

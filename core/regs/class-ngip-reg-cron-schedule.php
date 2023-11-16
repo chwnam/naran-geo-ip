@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Reg_Cron_Schedule' ) ) {
 	class NGIP_Reg_Cron_Schedule implements NGIP_Reg {
-		public string $name;
+		public  $name;
 
-		public int $interval;
+		public  $interval;
 
-		public string $display;
+		public  $display;
 
 		public function __construct(
 			string $name,

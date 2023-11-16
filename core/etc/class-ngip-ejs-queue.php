@@ -11,7 +11,7 @@ if ( ! class_exists( 'NGIP_EJS_Queue' ) ) {
 	class NGIP_EJS_Queue implements NGIP_Module {
 		use NGIP_Template_Impl;
 
-		private array $queue = [];
+		private  $queue = [];
 
 		public function __construct() {
 			if ( is_admin() ) {

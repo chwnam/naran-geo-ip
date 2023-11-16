@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'NGIP_Reg_Ajax' ) ) {
 	class NGIP_Reg_Ajax implements NGIP_Reg {
 		/** @var string */
-		public string $action;
+		public  $action;
 
 		/** @var Closure|array|string */
 		public $callback;
@@ -19,9 +19,9 @@ if ( ! class_exists( 'NGIP_Reg_Ajax' ) ) {
 		/** @var string|bool */
 		public $allow_nopriv;
 
-		public bool $is_wc_ajax;
+		public  $is_wc_ajax;
 
-		public int $priority;
+		public  $priority;
 
 		/**
 		 * @param string               $action       Action name.

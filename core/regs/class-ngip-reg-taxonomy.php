@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Reg_Taxonomy' ) ) {
 	class NGIP_Reg_Taxonomy implements NGIP_Reg {
-		public string $taxonomy;
+		public  $taxonomy;
 
-		public array $object_type;
+		public  $object_type;
 
-		public array $args;
+		public  $args;
 
 		/**
 		 * @param string       $taxonomy

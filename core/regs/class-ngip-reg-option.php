@@ -18,13 +18,13 @@ if ( ! class_exists( 'NGIP_Reg_Option' ) ) {
 	 * @property-read mixed         $default
 	 */
 	class NGIP_Reg_Option implements NGIP_Reg {
-		private static array $options = [];
+		private static  $options = [];
 
-		private string $option_group;
+		private  $option_group;
 
-		private string $option_name;
+		private  $option_name;
 
-		public array $args;
+		public  $args;
 
 		public static function factory( string $option_name ): ?NGIP_Reg_Option {
 			global $wp_registered_settings;

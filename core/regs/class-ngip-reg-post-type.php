@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'NGIP_Reg_Post_Type' ) ) {
 	class NGIP_Reg_Post_Type implements NGIP_Reg {
-		public string $post_type;
+		public  $post_type;
 
-		public array $args;
+		public  $args;
 
 		public function __construct( string $post_type, array $args ) {
 			$this->post_type = $post_type;
