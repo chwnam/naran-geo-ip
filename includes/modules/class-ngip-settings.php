@@ -13,6 +13,10 @@ if ( ! class_exists( 'NGIP_Settings' ) ) {
 		private array $value;
 
 		public function __construct() {
+			$this->value = get_option( 'ngip_settings', NGIP_Settings::get_default() );
+		}
+
+		public function refresh(): void {
 			$this->value = ngip_option()->settings->get_value();
 		}
 

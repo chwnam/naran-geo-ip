@@ -29,7 +29,7 @@ if ( ! class_exists( 'NGIP_Register_Option' ) ) {
 					'description'       => 'NGIP settings array',
 					'sanitize_callback' => [ NGIP_Settings::class, 'sanitize' ],
 					'show_in_rest'      => false,
-					'default'           => [ NGIP_Settings::class, 'get_default' ],
+					'default'           => NGIP_Settings::get_default(),
 					'autoload'          => false,
 				]
 			);

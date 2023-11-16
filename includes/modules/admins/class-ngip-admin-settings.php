@@ -16,6 +16,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 		public function __construct() {
 			$this
 				->add_action( 'admin_menu', 'add_admin_menu' )
+				->add_action( 'add_option_ngip_settings', 'after_option_add', null, 2 )
 				->add_action( 'update_option_ngip_settings', 'after_option_update', null, 4 )
 			;
 		}
@@ -50,6 +51,10 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 			;
 		}
 
+		public function after_option_add( $option, $value ) {
+			$this->after_option_update( '', $value );
+		}
+
 		/**
 		 * @param mixed $old_value
 		 */
@@ -59,6 +64,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 
 			if ( $new_license && $old_license !== $new_license ) {
 				$this->remove_action( 'update_option_ngip_settings', 'after_option_update' );
+				ngip_settings()->refresh();
 				do_action( 'ngip_db_update' );
 				$this->add_action( 'update_option_ngip_settings', 'after_option_update', null, 4 );
 			}
@@ -232,7 +238,7 @@ if ( ! class_exists( 'NGIP_Admin_Settings' ) ) {
 				'admins/settings-ip-test-yours',
 				[
 					'ip'           => $ip,
-					'country_code' => $code
+					'country_code' => $code,
 				]
 			);
 		}
